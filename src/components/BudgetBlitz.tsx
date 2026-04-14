@@ -131,7 +131,7 @@ export function BudgetBlitz() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] flex flex-col">
+    <div className="flex-1 flex flex-col">
       <AnimatePresence mode="wait">
         {phase === "start" && <StartScreen key="start" onStart={handleStart} />}
         {(phase === "playing" || phase === "feedback") && (
@@ -148,12 +148,13 @@ export function BudgetBlitz() {
           />
         )}
         {phase === "end" && (
-          <EndScreen
-            key="end"
-            results={roundResults}
-            score={score}
-            onRestart={handleRestart}
-          />
+          <div key="end" className="flex-1 flex flex-col">
+            <EndScreen
+              results={roundResults}
+              score={score}
+              onRestart={handleRestart}
+            />
+          </div>
         )}
       </AnimatePresence>
     </div>

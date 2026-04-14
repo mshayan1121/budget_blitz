@@ -54,93 +54,58 @@ export function EndScreen({ results, score, onRestart }: EndScreenProps) {
     };
   }, [score]);
 
+  const smartChoices = results.filter((r) => r.score > 0).length;
+  const poorChoices = results.length - smartChoices;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex flex-col items-center text-center py-8 px-4"
+      className="flex flex-col items-center justify-between text-center flex-1 py-6 px-4"
     >
-      {/* Score */}
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 12 }}
-        className="w-32 h-32 rounded-full bg-accent/10 flex items-center justify-center mb-6"
-      >
-        <div>
-          <div className="text-4xl font-bold text-accent">{displayScore}</div>
-          <div className="text-xs text-gray-400 font-medium">out of 80</div>
-        </div>
-      </motion.div>
+      <div className="flex flex-col items-center gap-4 w-full">
+        {/* Score circle */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 12 }}
+          className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center"
+        >
+          <div>
+            <div className="text-3xl font-bold text-accent">{displayScore}</div>
+            <div className="text-[10px] text-gray-400 font-medium">out of 80</div>
+          </div>
+        </motion.div>
 
-      {/* Personality badge */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 12 }}
-        className="mb-6"
-      >
-        <div className="text-5xl mb-2">{personality.emoji}</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          {personality.title}
-        </h2>
-        <p className="text-sm text-gray-500 max-w-xs">{personality.description}</p>
-      </motion.div>
+        {/* Personality badge */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 12 }}
+        >
+          <div className="text-4xl mb-1">{personality.emoji}</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-1">
+            {personality.title}
+          </h2>
+          <p className="text-sm text-gray-500 max-w-xs">{personality.description}</p>
+        </motion.div>
 
-      {/* Round breakdown */}
-      <div className="w-full max-w-xs mb-8">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Round Breakdown
-        </h3>
-        <div className="space-y-2">
-          {results.map((result, i) => (
-            <motion.div
-              key={result.scenario.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8 + i * 0.1 }}
-              className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{result.scenario.emoji}</span>
-                <span className="text-sm text-gray-700 font-medium">
-                  {result.scenario.item}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    result.choice === "buy"
-                      ? "bg-buy/10 text-buy"
-                      : result.choice === "skip"
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-warn/10 text-warn"
-                  }`}
-                >
-                  {result.choice === "timeout"
-                    ? "Time's up"
-                    : result.choice === "buy"
-                    ? "Bought"
-                    : "Skipped"}
-                </span>
-                <span
-                  className={`text-sm font-bold ${
-                    result.score > 0 ? "text-buy" : "text-warn"
-                  }`}
-                >
-                  +{result.score}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {/* Summary line */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-sm font-medium text-gray-600 bg-gray-50 rounded-xl px-4 py-2"
+        >
+          ✅ {smartChoices} smart {smartChoices === 1 ? "choice" : "choices"} · ❌ {poorChoices} poor {poorChoices === 1 ? "choice" : "choices"}
+        </motion.div>
       </div>
 
       {/* Play again */}
       <motion.button
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.3 }}
+        transition={{ delay: 1.0 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onRestart}
